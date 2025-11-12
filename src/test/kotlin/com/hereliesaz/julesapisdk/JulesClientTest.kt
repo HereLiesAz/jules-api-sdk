@@ -109,7 +109,7 @@ class JulesClientTest {
     @Test
     fun `getSession returns session`() = runBlocking {
         val mockResponse = readResource("/getSession.json")
-        client = createMockClient(mapOf("/sessions/test-id" to mockResponse))
+        client = createMockClient(mapOf("/test-id" to mockResponse))
         val response = client.getSession("test-id")
         assertTrue(response is SdkResult.Success)
         val expected = json.decodeFromString<Session>(mockResponse)
@@ -118,7 +118,7 @@ class JulesClientTest {
 
     @Test
     fun `approvePlan works`() = runBlocking {
-        client = createMockClient(mapOf("/sessions/test-id:approvePlan" to "{}"))
+        client = createMockClient(mapOf("/test-id:approvePlan" to "{}"))
         val response = client.approvePlan("test-id")
         assertTrue(response is SdkResult.Success)
     }
@@ -126,7 +126,7 @@ class JulesClientTest {
     @Test
     fun `listActivities returns activities`() = runBlocking {
         val mockResponse = readResource("/listActivities.json")
-        client = createMockClient(mapOf("/sessions/test-id/activities" to mockResponse))
+        client = createMockClient(mapOf("/test-id/activities" to mockResponse))
         val response = client.listActivities("test-id")
         assertTrue(response is SdkResult.Success)
         val expected = json.decodeFromString<ListActivitiesResponse>(mockResponse)
@@ -136,7 +136,7 @@ class JulesClientTest {
     @Test
     fun `getActivity returns activity`() = runBlocking {
         val mockResponse = readResource("/getActivity.json")
-        client = createMockClient(mapOf("/sessions/session-id/activities/activity-id" to mockResponse))
+        client = createMockClient(mapOf("/session-id/activities/activity-id" to mockResponse))
         val response = client.getActivity("session-id", "activity-id")
         assertTrue(response is SdkResult.Success)
         val expected = json.decodeFromString<Activity>(mockResponse)
@@ -146,7 +146,7 @@ class JulesClientTest {
     @Test
     fun `sendMessage returns message`() = runBlocking {
         val mockResponse = readResource("/sendMessage.json")
-        client = createMockClient(mapOf("/sessions/test-id:sendMessage" to mockResponse))
+        client = createMockClient(mapOf("/test-id:sendMessage" to mockResponse))
         val response = client.sendMessage("test-id", "prompt")
         assertTrue(response is SdkResult.Success)
         val expected = json.decodeFromString<MessageResponse>(mockResponse)

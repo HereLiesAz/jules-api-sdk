@@ -93,7 +93,7 @@ class JulesClient(
         * @return The `Session` object.
      */
     suspend fun getSession(sessionId: String): SdkResult<Session> {
-        return httpClient.get("/sessions/$sessionId")
+        return httpClient.get("/$sessionId")
     }
 
     /**
@@ -102,7 +102,7 @@ class JulesClient(
      * @param sessionId The ID of the session.
      */
     suspend fun approvePlan(sessionId: String): SdkResult<Unit> {
-        return httpClient.post("/sessions/$sessionId:approvePlan", ApprovePlanRequest())
+        return httpClient.post("/$sessionId:approvePlan", ApprovePlanRequest())
     }
 
     /**
@@ -117,7 +117,7 @@ class JulesClient(
         val params = mutableMapOf<String, String>()
         pageSize?.let { params["pageSize"] = it.toString() }
         pageToken?.let { params["pageToken"] = it }
-        return httpClient.get("/sessions/$sessionId/activities", params)
+        return httpClient.get("/$sessionId/activities", params)
     }
 
     /**
@@ -128,7 +128,7 @@ class JulesClient(
      * @return The `Activity` object.
      */
     suspend fun getActivity(sessionId: String, activityId: String): SdkResult<Activity> {
-        return httpClient.get("/sessions/$sessionId/activities/$activityId")
+        return httpClient.get("/$sessionId/activities/$activityId")
     }
 
     /**
@@ -141,7 +141,7 @@ class JulesClient(
     suspend fun sendMessage(sessionId: String, prompt: String): SdkResult<MessageResponse> {
         require(prompt.isNotBlank()) { "Prompt must be a non-empty string" }
         val request = SendMessageRequest(prompt)
-        return httpClient.post("/sessions/$sessionId:sendMessage", request)
+        return httpClient.post("/$sessionId:sendMessage", request)
     }
 
     override fun close() {
