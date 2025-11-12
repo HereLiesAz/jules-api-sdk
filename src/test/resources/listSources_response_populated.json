@@ -1,0 +1,25 @@
+{
+  "sources":
+},
+{
+"name": "sources/github/my-org/internal-tools",
+"id": "github/my-org/internal-tools",
+"githubRepo": {
+"owner": "my-org",
+"repo": "internal-tools",
+"isPrivate": true,
+"defaultBranch": {
+"displayName": "production"
+},
+"branches": [
+{
+"displayName": "production"
+},
+{
+"displayName": "staging"
+}
+]
+}
+}
+]
+}
