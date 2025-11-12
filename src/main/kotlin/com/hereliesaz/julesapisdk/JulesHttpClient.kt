@@ -46,6 +46,7 @@ class JulesHttpClient(
     private val httpClient: HttpClient? = null
 ) : Closeable {
     val client: HttpClient
+    private val ownClient: Boolean = httpClient == null
 
     init {
         val baseClient = httpClient ?: HttpClient(CIO) {
@@ -63,7 +64,7 @@ class JulesHttpClient(
                 level = LogLevel.NONE
             }
             install(HttpRequestRetry) {
-                retryOnServerErrors(retryConfig.maxRetries)
+                maxRetries = retryConfig.maxRetries
                 exponentialDelay(retryConfig.initialDelayMs.toDouble())
                 retryIf { _, response ->
                     response.status.value.let { it in setOf(408, 429, 500, 502, 503, 504) }
@@ -127,6 +128,8 @@ class JulesHttpClient(
     }
 
     override fun close() {
-        client.close()
+        if (ownClient) {
+            client.close()
+        }
     }
 }

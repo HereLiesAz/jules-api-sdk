@@ -81,14 +81,16 @@ All methods are `suspend` functions and should be called from a coroutine.
 ```kotlin
 val client = JulesClient(
     apiKey: String,
-    baseUrl: String = "https://jules.googleapis.com/v1alpha",
+    baseUrl: String = "https://jules.googleapis.com",
+    apiVersion: String = "v1alpha",
     retryConfig: RetryConfig = RetryConfig()
 )
 ```
 
 **Parameters:**
 - `apiKey`: Your Jules API key (required).
-- `baseUrl`: The base URL for the Jules API (optional, defaults to `https://jules.googleapis.com/v1alpha`).
+- `baseUrl`: The base URL for the Jules API (optional, defaults to `https://jules.googleapis.com`).
+- `apiVersion`: The version of the Jules API to use (optional, defaults to `v1alpha`).
 - `retryConfig`: Configuration for request retries (optional).
   - `maxRetries`: Maximum number of retry attempts (default: 0, retries are disabled by default).
   - `initialDelayMs`: The initial delay in milliseconds before the first retry (default: 1000).
@@ -97,7 +99,8 @@ val client = JulesClient(
 ```kotlin
 val client = JulesClient(
     apiKey = System.getenv("JULES_API_KEY")!!,
-    baseUrl = "https://jules.googleapis.com/v1alpha",
+    baseUrl = "https://jules.googleapis.com",
+    apiVersion = "v1alpha",
     retryConfig = RetryConfig(
         maxRetries = 5,
         initialDelayMs = 500
