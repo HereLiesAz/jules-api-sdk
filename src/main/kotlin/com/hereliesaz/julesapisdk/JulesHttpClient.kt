@@ -104,16 +104,21 @@ class JulesHttpClient(
      * @param params The query parameters for the request.
      * @return The response body, deserialized to the expected type.
      */
-    suspend inline fun <reified T> get(endpoint: String, params: Map<String, String> = emptyMap()): T {
-        val response = client.get(buildUrl(endpoint)) {
-            params.forEach { (key, value) ->
-                parameter(key, value)
+    suspend inline fun <reified T> get(endpoint: String, params: Map<String, String> = emptyMap()): SdkResult<T> {
+        return try {
+            val response = client.get(buildUrl(endpoint)) {
+                params.forEach { (key, value) ->
+                    parameter(key, value)
+                }
             }
+            if (!response.status.isSuccess()) {
+                SdkResult.Error(response.status.value, response.body())
+            } else {
+                SdkResult.Success(response.body())
+            }
+        } catch (e: Exception) {
+            SdkResult.NetworkError(e)
         }
-        if (!response.status.isSuccess()) {
-            throw JulesApiException(response.status.value, response.body())
-        }
-        return response.body()
     }
 
     /**
@@ -124,16 +129,21 @@ class JulesHttpClient(
      * @param body The optional request body. If null, no body is sent.
      * @return The response body, deserialized to the expected type.
      */
-    suspend inline fun <reified T> post(endpoint: String, body: Any? = null): T {
-        val response = client.post(buildUrl(endpoint)) {
-            if (body != null) {
-                setBody(body)
+    suspend inline fun <reified T> post(endpoint: String, body: Any? = null): SdkResult<T> {
+        return try {
+            val response = client.post(buildUrl(endpoint)) {
+                if (body != null) {
+                    setBody(body)
+                }
             }
+            if (!response.status.isSuccess()) {
+                SdkResult.Error(response.status.value, response.body())
+            } else {
+                SdkResult.Success(response.body())
+            }
+        } catch (e: Exception) {
+            SdkResult.NetworkError(e)
         }
-        if (!response.status.isSuccess()) {
-            throw JulesApiException(response.status.value, response.body())
-        }
-        return response.body()
     }
 
     override fun close() {
