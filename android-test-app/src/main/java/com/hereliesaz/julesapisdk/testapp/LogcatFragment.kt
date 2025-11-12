@@ -43,7 +43,7 @@ class LogcatFragment : Fragment() {
         viewModel.diagnosticLogs.observe(viewLifecycleOwner) { logs ->
             logcatAdapter.submitList(logs.toList()) // submitList needs a new list to calculate diff
             if (logs.isNotEmpty()) {
-                binding.logcatRecyclerview.scrollToPosition(0) // Scroll to the top to see the newest log
+                binding.logcatRecyclerview.scrollToPosition(logs.size - 1) // Scroll to the bottom to see the newest log
             }
         }
     }

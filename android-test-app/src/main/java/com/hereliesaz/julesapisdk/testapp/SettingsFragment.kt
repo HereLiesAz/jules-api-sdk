@@ -85,11 +85,8 @@ class SettingsFragment : Fragment() {
                 viewModel.createSession(selectedSource)
                 saveSettings(apiKey, selectedSource.name)
 
-                // Switch to logcat tab to see the session creation status
-                (requireActivity() as? MainActivity)?.binding?.viewPager?.currentItem = 2
             } else {
                 viewModel.addLog("Save failed: Please load and select a source first.")
-                (requireActivity() as? MainActivity)?.binding?.viewPager?.currentItem = 2 // Switch to logcat tab to see the error
             }
         }
     }

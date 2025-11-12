@@ -36,7 +36,7 @@ class MainViewModel : ViewModel() {
     fun addLog(log: String) { // Changed to public
         val timestamp = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).format(Date())
         val currentLogs = _diagnosticLogs.value.orEmpty().toMutableList()
-        currentLogs.add(0, "$timestamp: $log") // Add to the top for most recent first
+        currentLogs.add("$timestamp: $log") // Add to the bottom for most recent last
         _diagnosticLogs.postValue(currentLogs)
     }
 
