@@ -48,13 +48,20 @@ class MyViewModel(private val julesClient: JulesClient) : ViewModel() {
                 title = "Boba App"
             )
 
-            try {
-                val session = julesClient.createSession(sessionRequest)
-                println("Created session: ${session.id}")
-                // Update your UI state here
-            } catch (e: JulesApiException) {
-                println("Error: ${e.message}")
-                // Handle API error
+            when (val result = julesClient.createSession(sessionRequest)) {
+                is SdkResult.Success -> {
+                    val session = result.data
+                    println("Created session: ${session.id}")
+                    // Update your UI state with the session
+                }
+                is SdkResult.Error -> {
+                    println("API Error: ${result.code} - ${result.body}")
+                    // Update your UI state with the API error
+                }
+                is SdkResult.NetworkError -> {
+                    println("Network Error: ${result.throwable.message}")
+                    // Update your UI state with the network error
+                }
             }
         }
     }
@@ -170,22 +177,6 @@ val client = JulesClient(
 )
 ```
 
-### Error Recovery
-
-All API methods can throw exceptions (e.g., `JulesApiException` for 4xx/5xx responses). Always wrap API calls in `try-catch` blocks.
-
-```kotlin
-import com.hereliesaz.julesapisdk.JulesApiException
-
-try {
-    val session = client.createSession(request)
-    println("Success: ${session.id}")
-} catch (e: JulesApiException) {
-    println("Error: ${e.message}")
-    println("HTTP Status: ${e.statusCode}")
-    println("Response Body: ${e.responseBody}")
-}
-```
 
 ## Resources
 

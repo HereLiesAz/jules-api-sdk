@@ -6,6 +6,9 @@ build/
 # IDE files
 .idea/
 *.iml
+
+# Heap dumps
+*.hprof
 *.iws
 .project
 .classpath

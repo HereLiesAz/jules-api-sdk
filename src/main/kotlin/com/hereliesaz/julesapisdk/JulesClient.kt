@@ -39,12 +39,12 @@ class JulesClient(
      * @param filter An optional AIP-160 filter expression (e.g., "name=sources/source1 OR name=sources/source2").
      * @return A `ListSourcesResponse` containing a list of sources and an optional next page token.
      */
-    suspend fun listSources(pageSize: Int? = null, pageToken: String? = null, filter: String? = null): ListSourcesResponse {
+    suspend fun listSources(pageSize: Int? = null, pageToken: String? = null, filter: String? = null): SdkResult<ListSourcesResponse> {
         val params = mutableMapOf<String, String>()
         pageSize?.let { params["pageSize"] = it.toString() }
         pageToken?.let { params["pageToken"] = it }
         filter?.let { params["filter"] = it }
-        return httpClient.get<ListSourcesResponse>("/sources", params)
+        return httpClient.get("/sources", params)
     }
 
     /**
@@ -53,18 +53,23 @@ class JulesClient(
      * @param sourceId The ID of the source to retrieve.
      * @return The `Source` object.
      */
-    suspend fun getSource(sourceId: String): Source {
-        return httpClient.get<Source>("/sources/$sourceId")
+    suspend fun getSource(sourceId: String): SdkResult<Source> {
+        return httpClient.get("/sources/$sourceId")
     }
 
     /**
      * Creates a new session.
      *
      * @param request The request object for creating a session.
-     * @return The created `Session` object.
+     * @return The created `JulesSession` object.
      */
-    suspend fun createSession(request: CreateSessionRequest): Session {
-        return httpClient.post<Session>("/sessions", request)
+    suspend fun createSession(request: CreateSessionRequest): SdkResult<JulesSession> {
+        val result = httpClient.post<Session>("/sessions", request)
+        return when (result) {
+            is SdkResult.Success -> SdkResult.Success(JulesSession(this, result.data))
+            is SdkResult.Error -> result
+            is SdkResult.NetworkError -> result
+        }
     }
 
     /**
@@ -74,11 +79,11 @@ class JulesClient(
      * @param pageToken A token for pagination.
      * @return A `ListSessionsResponse` containing a list of sessions and an optional next page token.
      */
-    suspend fun listSessions(pageSize: Int? = null, pageToken: String? = null): ListSessionsResponse {
+    suspend fun listSessions(pageSize: Int? = null, pageToken: String? = null): SdkResult<ListSessionsResponse> {
         val params = mutableMapOf<String, String>()
         pageSize?.let { params["pageSize"] = it.toString() }
         pageToken?.let { params["pageToken"] = it }
-        return httpClient.get<ListSessionsResponse>("/sessions", params)
+        return httpClient.get("/sessions", params)
     }
 
     /**
@@ -87,8 +92,8 @@ class JulesClient(
      * @param sessionId The ID of the session to retrieve.
      * @return The `Session` object.
      */
-    suspend fun getSession(sessionId: String): Session {
-        return httpClient.get<Session>("/sessions/$sessionId")
+    suspend fun getSession(sessionId: String): SdkResult<Session> {
+        return httpClient.get("/sessions/$sessionId")
     }
 
     /**
@@ -96,8 +101,8 @@ class JulesClient(
      *
      * @param sessionId The ID of the session.
      */
-    suspend fun approvePlan(sessionId: String) {
-        httpClient.post<Unit>("/sessions/$sessionId:approvePlan", ApprovePlanRequest())
+    suspend fun approvePlan(sessionId: String): SdkResult<Unit> {
+        return httpClient.post("/sessions/$sessionId:approvePlan", ApprovePlanRequest())
     }
 
     /**
@@ -108,11 +113,11 @@ class JulesClient(
      * @param pageToken A token for pagination.
      * @return A `ListActivitiesResponse` containing a list of activities and an optional next page token.
      */
-    suspend fun listActivities(sessionId: String, pageSize: Int? = null, pageToken: String? = null): ListActivitiesResponse {
+    suspend fun listActivities(sessionId: String, pageSize: Int? = null, pageToken: String? = null): SdkResult<ListActivitiesResponse> {
         val params = mutableMapOf<String, String>()
         pageSize?.let { params["pageSize"] = it.toString() }
         pageToken?.let { params["pageToken"] = it }
-        return httpClient.get<ListActivitiesResponse>("/sessions/$sessionId/activities", params)
+        return httpClient.get("/sessions/$sessionId/activities", params)
     }
 
     /**
@@ -122,8 +127,8 @@ class JulesClient(
      * @param activityId The ID of the activity to retrieve.
      * @return The `Activity` object.
      */
-    suspend fun getActivity(sessionId: String, activityId: String): Activity {
-        return httpClient.get<Activity>("/sessions/$sessionId/activities/$activityId")
+    suspend fun getActivity(sessionId: String, activityId: String): SdkResult<Activity> {
+        return httpClient.get("/sessions/$sessionId/activities/$activityId")
     }
 
     /**
@@ -133,10 +138,10 @@ class JulesClient(
      * @param prompt The prompt to send to the agent.
      * @return A `MessageResponse` object.
      */
-    suspend fun sendMessage(sessionId: String, prompt: String): MessageResponse {
+    suspend fun sendMessage(sessionId: String, prompt: String): SdkResult<MessageResponse> {
         require(prompt.isNotBlank()) { "Prompt must be a non-empty string" }
         val request = SendMessageRequest(prompt)
-        return httpClient.post<MessageResponse>("/sessions/$sessionId:sendMessage", request)
+        return httpClient.post("/sessions/$sessionId:sendMessage", request)
     }
 
     override fun close() {
