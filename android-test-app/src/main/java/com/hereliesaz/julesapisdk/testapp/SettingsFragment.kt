@@ -12,10 +12,12 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.hereliesaz.julesapisdk.testapp.databinding.FragmentSettingsBinding
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
 
@@ -95,11 +97,28 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.sources.observe(viewLifecycleOwner) { sources ->
-            sourcesAdapter.setSources(sources)
-            val savedSourceName = getEncryptedSharedPreferences().getString("selected_source_name", null)
-            if (savedSourceName != null) {
-                sourcesAdapter.setSelectedSource(savedSourceName)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is UiState.SourcesLoaded -> {
+                        sourcesAdapter.submitList(state.sources)
+                        val savedSourceName = getEncryptedSharedPreferences().getString("selected_source_name", null)
+                        if (savedSourceName != null) {
+                            sourcesAdapter.setSelectedSource(savedSourceName)
+                        }
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is UiState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is UiState.Error -> {
+                        // You can show a toast or a snackbar here
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
             }
         }
     }

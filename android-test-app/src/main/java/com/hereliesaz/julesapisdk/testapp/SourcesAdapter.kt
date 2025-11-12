@@ -4,23 +4,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hereliesaz.julesapisdk.Source
 
 class SourcesAdapter(
-    private val sources: MutableList<Source> = mutableListOf(),
     private val onSourceSelected: (Source) -> Unit
-) : RecyclerView.Adapter<SourcesAdapter.SourceViewHolder>() {
+) : ListAdapter<Source, SourcesAdapter.SourceViewHolder>(SourceDiffCallback()) {
 
     private var selectedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_activated_1, parent, false)
         return SourceViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
-        val source = sources[position]
+        val source = getItem(position)
         holder.bind(source, position == selectedPosition)
         holder.itemView.setOnClickListener {
             notifyItemChanged(selectedPosition)
@@ -30,24 +31,16 @@ class SourcesAdapter(
         }
     }
 
-    override fun getItemCount(): Int = sources.size
-
     fun getSelectedSource(): Source? {
         return if (selectedPosition != RecyclerView.NO_POSITION) {
-            sources[selectedPosition]
+            getItem(selectedPosition)
         } else {
             null
         }
     }
 
-    fun setSources(newSources: List<Source>) {
-        sources.clear()
-        sources.addAll(newSources)
-        notifyDataSetChanged()
-    }
-
     fun setSelectedSource(sourceName: String) {
-        val position = sources.indexOfFirst { it.name == sourceName }
+        val position = currentList.indexOfFirst { it.name == sourceName }
         if (position != -1) {
             selectedPosition = position
             notifyDataSetChanged()
@@ -60,6 +53,16 @@ class SourcesAdapter(
         fun bind(source: Source, isSelected: Boolean) {
             textView.text = source.url
             itemView.isActivated = isSelected
+        }
+    }
+
+    class SourceDiffCallback : DiffUtil.ItemCallback<Source>() {
+        override fun areItemsTheSame(oldItem: Source, newItem: Source): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Source, newItem: Source): Boolean {
+            return oldItem == newItem
         }
     }
 }

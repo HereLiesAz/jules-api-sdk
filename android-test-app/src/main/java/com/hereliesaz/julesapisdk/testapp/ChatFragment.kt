@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hereliesaz.julesapisdk.testapp.databinding.FragmentChatBinding
+import kotlinx.coroutines.launch
 
 class ChatFragment : Fragment() {
 
@@ -41,10 +43,12 @@ class ChatFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.messages.observe(viewLifecycleOwner) { messages ->
-            messageAdapter.submitList(messages)
-            if (messages.isNotEmpty()) {
-                binding.messagesRecyclerview.scrollToPosition(messages.size - 1)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.messages.collect { messages ->
+                messageAdapter.submitList(messages)
+                if (messages.isNotEmpty()) {
+                    binding.messagesRecyclerview.scrollToPosition(messages.size - 1)
+                }
             }
         }
     }
