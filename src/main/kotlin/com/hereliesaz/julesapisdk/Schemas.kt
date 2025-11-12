@@ -133,16 +133,38 @@ data class SessionOutput(
  * @property outputs The outputs of the session.
  */
 @Serializable
+internal data class PartialSession(
+    val name: String,
+    val id: String
+)
+
+/**
+ * A session with the Jules AI.
+ *
+ * @property name The resource name of the session.
+ * @property id The unique ID of the session.
+ * @property createTime The time the session was created.
+ * @property updateTime The time the session was last updated.
+ * @property state The current state of the session.
+ * @property url The URL of the session.
+ * @property prompt The initial prompt for the session.
+ * @property sourceContext The source context for the session.
+ * @property title An optional title for the session.
+ * @property requirePlanApproval Whether the session requires plan approval.
+ *_
+ * @property automationMode The automation mode for the session.
+ * @property outputs The outputs of the session.
+ */
+@Serializable
 data class Session(
-    // The create endpoint returns a partial session, so most fields are nullable.
     val name: String,
     val id: String,
-    val createTime: String? = null,
-    val updateTime: String? = null,
-    val state: SessionState? = null,
-    val url: String? = null,
-    val prompt: String? = null,
-    val sourceContext: SourceContext? = null,
+    val createTime: String,
+    val updateTime: String,
+    val state: SessionState,
+    val url: String,
+    val prompt: String,
+    val sourceContext: SourceContext,
     val title: String? = null,
     val requirePlanApproval: Boolean? = null,
     val automationMode: AutomationMode? = null,
