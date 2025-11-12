@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hereliesaz.julesapisdk.testapp.databinding.FragmentLogcatBinding
+import kotlinx.coroutines.launch
 
 class LogcatFragment : Fragment() {
 
@@ -40,10 +42,12 @@ class LogcatFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.diagnosticLogs.observe(viewLifecycleOwner) { logs ->
-            logcatAdapter.submitList(logs.toList()) // submitList needs a new list to calculate diff
-            if (logs.isNotEmpty()) {
-                binding.logcatRecyclerview.scrollToPosition(logs.size - 1) // Scroll to the bottom to see the newest log
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.diagnosticLogs.collect { logs ->
+                logcatAdapter.submitList(logs.toList()) // submitList needs a new list to calculate diff
+                if (logs.isNotEmpty()) {
+                    binding.logcatRecyclerview.scrollToPosition(logs.size - 1) // Scroll to the bottom to see the newest log
+                }
             }
         }
     }

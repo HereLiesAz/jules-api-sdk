@@ -153,11 +153,11 @@ Get a specific activity for a session.
 ##### `sendMessage(sessionId: String, prompt: String)`
 Send a message to the agent in a session.
 
-## Authentication
+## Authentication & Security
 
 All API requests require authentication using your Jules API key. Get your API key from the Settings page in the [Jules web app](https://jules.google.com). The client automatically includes the key in the `X-Goog-Api-Key` header for all requests.
 
-**Important:** Keep your API keys secure. Never commit them to version control or expose them in client-side code. Use environment variables or a secrets management tool.
+**Important:** Keep your API keys secure. Never commit them to version control or expose them in client-side code. For Android applications, we strongly recommend storing your API key securely using a mechanism like Android's [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). The included reference test application demonstrates this best practice.
 
 ## Error Handling & Resilience
 
