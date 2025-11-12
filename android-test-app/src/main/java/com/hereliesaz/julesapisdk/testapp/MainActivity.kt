@@ -7,7 +7,7 @@ import com.hereliesaz.julesapisdk.testapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    internal lateinit var binding: ActivityMainBinding // Changed to internal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
