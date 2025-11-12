@@ -2,7 +2,7 @@ package com.hereliesaz.julesapisdk
 
 import io.ktor.client.*
 import io.ktor.client.call.body
-import io.ktor.client.engine.okhttp.*
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
@@ -12,6 +12,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import java.io.Closeable
+import java.util.concurrent.TimeUnit
 
 /**
  * Configuration for retrying failed HTTP requests.
@@ -53,9 +54,9 @@ class JulesHttpClient(
         val baseClient = httpClient ?: HttpClient(OkHttp) {
             engine {
                 config {
-                    connectTimeout(timeout, java.util.concurrent.TimeUnit.MILLISECONDS)
-                    readTimeout(timeout, java.util.concurrent.TimeUnit.MILLISECONDS)
-                    writeTimeout(timeout, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    readTimeout(timeout, TimeUnit.MILLISECONDS)
+                    writeTimeout(timeout, TimeUnit.MILLISECONDS)
                 }
             }
             install(ContentNegotiation) {
