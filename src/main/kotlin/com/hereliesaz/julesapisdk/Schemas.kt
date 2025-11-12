@@ -466,3 +466,9 @@ data class MessageResponse(
 data class SendMessageRequest(
     val prompt: String
 )
+
+/**
+ * A request to approve a plan.
+ */
+@Serializable
+class ApprovePlanRequest

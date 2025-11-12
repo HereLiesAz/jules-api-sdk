@@ -18,16 +18,18 @@ class JulesClient(
      * Secondary constructor for creating a `JulesClient` with an API key.
      *
      * @param apiKey The API key for authenticating with the Jules API.
-     * @param baseUrl The base URL of the Jules API. Defaults to "https://jules.googleapis.com/v1alpha".
+     * @param baseUrl The base URL of the Jules API. Defaults to "https://jules.googleapis.com".
+     * @param apiVersion The version of the Jules API. Defaults to "v1alpha".
      * @param retryConfig The configuration for retrying failed requests. Defaults to a new `RetryConfig` instance.
      * @param ktorClient An optional pre-configured Ktor HttpClient.
      */
     constructor(
         apiKey: String,
-        baseUrl: String = "https://jules.googleapis.com/v1alpha",
+        baseUrl: String = "https://jules.googleapis.com",
+        apiVersion: String = "v1alpha",
         retryConfig: RetryConfig = RetryConfig(),
         ktorClient: HttpClient? = null
-    ) : this(JulesHttpClient(apiKey, baseUrl, retryConfig = retryConfig, httpClient = ktorClient))
+    ) : this(JulesHttpClient(apiKey, baseUrl, apiVersion, retryConfig = retryConfig, httpClient = ktorClient))
 
     /**
      * Lists all available sources.
@@ -95,7 +97,7 @@ class JulesClient(
      * @param sessionId The ID of the session.
      */
     suspend fun approvePlan(sessionId: String) {
-        httpClient.post<Unit>("/sessions/$sessionId:approvePlan", emptyMap<String, String>())
+        httpClient.post<Unit>("/sessions/$sessionId:approvePlan", ApprovePlanRequest())
     }
 
     /**
