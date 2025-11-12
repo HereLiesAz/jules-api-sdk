@@ -61,7 +61,7 @@ class JulesClientTest {
         assertNotNull(data.sources)
         assertTrue(data.sources?.isNotEmpty() == true)
         val source = data.sources?.get(0)
-        assertTrue(source is Source.GithubSource)
+        assertTrue(source is GithubRepoSource)
     }
 
     @Test
@@ -70,7 +70,7 @@ class JulesClientTest {
         client = createMockClient(mapOf("/sources/test-id" to mockResponse))
         val response = client.getSource("test-id")
         assertTrue(response is SdkResult.Success)
-        val expected = json.decodeFromString<Source>(mockResponse)
+        val expected = json.decodeFromString<GithubSource>(mockResponse)
         assertEquals(expected, (response as SdkResult.Success).data)
     }
 

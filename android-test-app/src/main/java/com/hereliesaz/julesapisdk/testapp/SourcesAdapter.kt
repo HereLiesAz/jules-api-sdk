@@ -58,7 +58,7 @@ class SourcesAdapter(
         private val textView: TextView = itemView.findViewById(android.R.id.text1)
 
         fun bind(source: Source, isSelected: Boolean) {
-            textView.text = source.url
+            textView.text = source.name
             itemView.isActivated = isSelected
         }
     }

@@ -505,37 +505,43 @@ data class ListActivitiesResponse(
 sealed interface Source {
     val name: String
     val id: String
-    val createTime: String
-    val updateTime: String
-    val url: String
-    val type: String
-
-    @Serializable
-    data class GithubSource(
-        override val name: String,
-        override val id: String,
-        override val createTime: String,
-        override val updateTime: String,
-        override val url: String,
-        override val type: String,
-        val githubRepo: GithubRepo
-    ) : Source
-
-    @Serializable
-    data class UnknownSource(
-        override val name: String,
-        override val id: String,
-        override val createTime: String,
-        override val updateTime: String,
-        override val url: String,
-        override val type: String
-    ) : Source
 }
+
+@Serializable
+data class SourceInfo(
+    val createTime: String,
+    val updateTime: String,
+    val url: String,
+    val type: String
+)
+
+@Serializable
+data class GithubRepoSource(
+    override val name: String,
+    override val id: String,
+    val githubRepo: GithubRepo
+) : Source
+
+@Serializable
+data class GithubSource(
+    val sourceInfo: SourceInfo,
+    val githubRepo: GithubRepo,
+    override val name: String,
+    override val id: String
+) : Source
+
+@Serializable
+data class UnknownSource(
+    val sourceInfo: SourceInfo,
+    override val name: String,
+    override val id: String
+) : Source
+
 
 object SourceSerializer : JsonContentPolymorphicSerializer<Source>(Source::class) {
     override fun selectDeserializer(element: JsonElement) = when {
-        "githubRepo" in element.jsonObject -> Source.GithubSource.serializer()
-        else -> Source.UnknownSource.serializer()
+        "githubRepo" in element.jsonObject -> GithubSource.serializer()
+        else -> UnknownSource.serializer()
     }
 }
 
@@ -548,7 +554,7 @@ object SourceSerializer : JsonContentPolymorphicSerializer<Source>(Source::class
  */
 @Serializable
 data class ListSourcesResponse(
-    val sources: List<Source>? = null,
+    val sources: List<GithubRepoSource>? = null,
     val nextPageToken: String? = null
 )
 
@@ -571,7 +577,7 @@ data class ErrorDetail(
 /**
  * A Google API error.
  *
-* @property code The HTTP status code.
+ * @property code The HTTP status code.
  * @property message The error message.
  * @property status The error status.
  * @property details The details of the error.

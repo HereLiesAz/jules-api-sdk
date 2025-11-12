@@ -53,7 +53,7 @@ class JulesClient(
      * @param sourceId The ID of the source to retrieve.
      * @return The `Source` object.
      */
-    suspend fun getSource(sourceId: String): SdkResult<Source> {
+    suspend fun getSource(sourceId: String): SdkResult<GithubSource> {
         return httpClient.get("/sources/$sourceId")
     }
 
@@ -89,8 +89,8 @@ class JulesClient(
     /**
      * Gets a specific session by its ID.
      *
-     * @param sessionId The ID of the session to retrieve.
-     * @return The `Session` object.
+        * @param sessionId The ID of the session to retrieve.
+        * @return The `Session` object.
      */
     suspend fun getSession(sessionId: String): SdkResult<Session> {
         return httpClient.get("/sessions/$sessionId")

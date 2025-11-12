@@ -94,11 +94,9 @@ class MainViewModel : ViewModel() {
             when (val result = julesClient?.createSession(CreateSessionRequest("Test Application", SourceContext(source.name)))) {
                 is SdkResult.Success -> {
                     julesSession = result.data
-                    source.url.let {
-                        val successMsg = "Session created with source: $it"
-                        addMessage(Message(successMsg, MessageType.BOT))
-                        addLog(successMsg)
-                    } ?: addLog("Session created with source: ${source.name} (URL not available)")
+                    val successMsg = "Session created with source: ${source.name}"
+                    addMessage(Message(successMsg, MessageType.BOT))
+                    addLog(successMsg)
                 }
                 is SdkResult.Error -> {
                     val errorMsg = "API Error creating session: ${result.code} - ${result.body}"
