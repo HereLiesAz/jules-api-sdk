@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "name": "name",
+      "id": "id",
+      "createTime": "now",
+      "updateTime": "now",
+      "url": "url",
+      "type": "type"
+    }
+  ]
+}

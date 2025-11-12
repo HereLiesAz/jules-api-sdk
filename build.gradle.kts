@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.9.20"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.20"
+    `maven-publish`
 }
 
 group = "com.jules"
@@ -40,4 +41,40 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.hereliesaz.jules-kotlin-sdk"
+            artifactId = "jules-api-kotlin-sdk"
+            version = "1.0.1"
+
+            from(components["java"])
+
+            pom {
+                name.set("Jules API Kotlin SDK")
+                description.set("A Kotlin SDK for the Jules API.")
+                url.set("https://github.com/hereliesaz/jules-api-kotlin-sdk")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("hereliesaz")
+                        name.set("Jules")
+                        email.set("jules@example.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:github.com/hereliesaz/jules-api-kotlin-sdk.git")
+                    developerConnection.set("scm:git:ssh://github.com/hereliesaz/jules-api-kotlin-sdk.git")
+                    url.set("https://github.com/hereliesaz/jules-api-kotlin-sdk/tree/main")
+                }
+            }
+        }
+    }
 }

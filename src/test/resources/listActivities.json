@@ -1,0 +1,13 @@
+{
+  "activities": [
+    {
+      "id": "id",
+      "name": "name",
+      "description": "desc",
+      "createTime": "now",
+      "updateTime": "now",
+      "prompt": "prompt",
+      "state": "state"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "name",
+  "id": "id",
+  "createTime": "now",
+  "updateTime": "now",
+  "state": "STATE_UNSPECIFIED",
+  "url": "url",
+  "prompt": "prompt",
+  "sourceContext": {
+    "source": "source"
+  }
+}
