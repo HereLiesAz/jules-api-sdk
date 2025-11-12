@@ -45,21 +45,32 @@ class JulesHttpClient(
 ) : Closeable {
     val client: HttpClient
 
+    // This Json object is now owned by the client, not the test.
+    private val json = Json {
+        ignoreUnknownKeys = true
+        prettyPrint = true
+    }
+
     init {
+        // 1. Determine the base client (either the mock or a new CIO client)
         val baseClient = httpClient ?: HttpClient(CIO) {
             engine {
                 requestTimeout = timeout
             }
+        }
+
+        // 2. Apply all configuration and plugins to the base client
+        client = baseClient.config {
+            // Install the single, definitive ContentNegotiation
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    prettyPrint = true
-                })
+                json(this@JulesHttpClient.json)
             }
+
             install(Logging) {
                 logger = Logger.DEFAULT
                 level = LogLevel.NONE
             }
+
             install(HttpRequestRetry) {
                 retryOnServerErrors(retryConfig.maxRetries)
                 exponentialDelay(retryConfig.initialDelayMs.toDouble())
@@ -70,9 +81,8 @@ class JulesHttpClient(
                     cause is java.io.IOException
                 }
             }
-        }
 
-        client = baseClient.config {
+            // Apply default headers last
             defaultRequest {
                 header("X-Goog-Api-Key", apiKey)
                 contentType(ContentType.Application.Json)
