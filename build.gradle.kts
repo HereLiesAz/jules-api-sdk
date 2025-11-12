@@ -6,7 +6,7 @@ plugins {
     `maven-publish`
 }
 
-group = "com.jules"
+group = "com.hereliesaz.jules-kotlin-sdk"
 version = "1.0.1"
 
 repositories {
@@ -70,7 +70,7 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:github.com/hereliesaz/jules-api-kotlin-sdk.git")
+                    connection.set("scm:git:https://github.com/hereliesaz/jules-api-kotlin-sdk.git")
                     developerConnection.set("scm:git:ssh://github.com/hereliesaz/jules-api-kotlin-sdk.git")
                     url.set("https://github.com/hereliesaz/jules-api-kotlin-sdk/tree/main")
                 }
