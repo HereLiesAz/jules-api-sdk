@@ -1,7 +1,6 @@
 # Jules AI Kotlin SDK
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![](https://jitpack.io/v/HereLiesAz/julesapisdk.svg)](https://jitpack.io/#HereLiesAz/julesapisdk)   [![](https://jitpack.io/v/HereLiesAz/julesapisdk.svg)](https://jitpack.io/#HereLiesAz/julesapisdk)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Note:** This is an **unofficial** community SDK for the Jules AI API. It is not affiliated with, officially maintained by, or endorsed by Google.
 
@@ -20,42 +19,45 @@ Add the following dependency to your `build.gradle.kts` or `build.gradle` file:
 implementation("com.hereliesaz.julesapisdk:kotlin-sdk:1.0.2")
 ```
 
-## Quick Start
+## Quick Start for Android
 
-The SDK is designed to be used with Kotlin Coroutines.
+All SDK methods are `suspend` functions and are main-safe. They should be called from a CoroutineScope, such as the `viewModelScope` in an Android ViewModel.
 
+### 1. Get the JulesClient
 ```kotlin
+// In your Hilt/Koin module or application class
+val client = JulesClient(apiKey = "YOUR_API_KEY")
+```
+
+### 2. Call the SDK from your ViewModel
+```kotlin
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hereliesaz.julesapisdk.JulesClient
 import com.hereliesaz.julesapisdk.CreateSessionRequest
 import com.hereliesaz.julesapisdk.SourceContext
-import com.hereliesaz.julesapisdk.GithubRepoContext
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
-fun main() = runBlocking {
-    val client = JulesClient(
-        apiKey = System.getenv("JULES_API_KEY") ?: "your-api-key"
-    )
+class MyViewModel(private val julesClient: JulesClient) : ViewModel() {
 
-    // Create a session
-    val sessionRequest = CreateSessionRequest(
-        prompt = "Create a boba app!",
-        sourceContext = SourceContext(
-            source = "sources/github/owner/repo",
-            githubRepoContext = GithubRepoContext(startingBranch = "main")
-        ),
-        title = "Boba App"
-    )
-    val session = client.createSession(sessionRequest)
-    println("Created session: ${session.id}")
+    fun createMySession() {
+        viewModelScope.launch { // Always use a scope like viewModelScope
+            val sessionRequest = CreateSessionRequest(
+                prompt = "Create a boba app!",
+                sourceContext = SourceContext(source = "my-source"),
+                title = "Boba App"
+            )
 
-
-    // List activities for the session
-    val activities = client.listActivities(session.id)
-    println("Found ${activities.activities?.size ?: 0} activities.")
-
-    // Send a message
-    client.sendMessage(session.id, "Make it corgi themed!")
-    println("Message sent!")
+            try {
+                val session = julesClient.createSession(sessionRequest)
+                println("Created session: ${session.id}")
+                // Update your UI state here
+            } catch (e: JulesApiException) {
+                println("Error: ${e.message}")
+                // Handle API error
+            }
+        }
+    }
 }
 ```
 
@@ -189,12 +191,9 @@ try {
 
 - [Official Jules API Documentation](https://developers.google.com/jules/api)
 - [Jules Web App](https://jules.google.com)
-- [GitHub Repository](https://github.com/kiwina/jules-api-sdk)
+- [GitHub Repository](https://github.com/hereliesaz/jules-api-sdk)
 
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guidelines](../CONTRIBUTING.md) for details.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

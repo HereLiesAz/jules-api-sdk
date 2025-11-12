@@ -25,6 +25,12 @@ android {
     publishing {
         singleVariant("release")
     }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 group = "com.hereliesaz.julesapisdk"
@@ -47,6 +53,8 @@ dependencies {
 
     // Testing
     testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.mockk)
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.logback.classic)
