@@ -4,13 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hereliesaz.julesapisdk.testapp.databinding.FragmentChatBinding
 
 class ChatFragment : Fragment() {
 
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MainViewModel by activityViewModels()
+    private lateinit var messageAdapter: MessageAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,6 +23,39 @@ class ChatFragment : Fragment() {
     ): View {
         _binding = FragmentChatBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupObservers()
+        setupClickListeners()
+    }
+
+    private fun setupRecyclerView() {
+        messageAdapter = MessageAdapter()
+        binding.messagesRecyclerview.apply {
+            adapter = messageAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.messages.observe(viewLifecycleOwner) { messages ->
+            messageAdapter.submitList(messages)
+            binding.messagesRecyclerview.scrollToPosition(messages.size - 1)
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.sendButton.setOnClickListener {
+            val message = binding.messageEdittext.text.toString()
+            if (message.isNotBlank()) {
+                viewModel.sendMessage(message)
+                binding.messageEdittext.text.clear()
+            }
+        }
     }
 
     override fun onDestroyView() {
