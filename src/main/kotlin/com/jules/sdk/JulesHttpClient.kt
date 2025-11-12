@@ -66,6 +66,9 @@ class JulesHttpClient(
                 retryIf { _, response ->
                     response.status.value.let { it in setOf(408, 429, 500, 502, 503, 504) }
                 }
+                retryOnExceptionIf { _, cause ->
+                    cause is java.io.IOException
+                }
             }
         }
 

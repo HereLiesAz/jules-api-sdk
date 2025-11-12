@@ -13,11 +13,11 @@ class SerializationTest {
     fun `can deserialize agentMessaged activity`() {
         val activityJson = """
             {
-                "name": "activity1",
                 "id": "1",
+                "name": "activity1",
                 "createTime": "2025-01-01T00:00:00Z",
                 "updateTime": "2025-01-01T00:00:00Z",
-                "description": "Agent messaged",
+                "prompt": "User prompt",
                 "state": "COMPLETED",
                 "agentMessaged": {
                     "agentMessage": "Hello from the agent"
@@ -33,17 +33,18 @@ class SerializationTest {
     fun `can deserialize planGenerated activity`() {
         val activityJson = """
             {
-                "name": "activity2",
                 "id": "2",
+                "name": "activity2",
                 "createTime": "2025-01-01T00:00:00Z",
                 "updateTime": "2025-01-01T00:00:00Z",
-                "description": "Plan generated",
+                "prompt": "User prompt",
                 "state": "COMPLETED",
                 "planGenerated": {
                     "plan": {
+                        "id": "plan1",
                         "steps": [
-                            { "description": "Step 1" },
-                            { "description": "Step 2" }
+                            { "id": "step1", "title": "Step 1", "description": "First step", "index": 0 },
+                            { "id": "step2", "title": "Step 2", "description": "Second step", "index": 1 }
                         ]
                     }
                 }
@@ -58,13 +59,11 @@ class SerializationTest {
     fun `can deserialize changeSet artifact`() {
         val artifactJson = """
             {
-                "name": "artifact1",
-                "id": "1",
-                "createTime": "2025-01-01T00:00:00Z",
-                "updateTime": "2025-01-01T00:00:00Z",
                 "changeSet": {
                     "source": "file.kt",
-                    "patch": "@@ -1,1 +1,1 @@"
+                    "gitPatch": {
+                        "unidiffPatch": "@@ -1,1 +1,1 @@"
+                    }
                 }
             }
         """.trimIndent()
