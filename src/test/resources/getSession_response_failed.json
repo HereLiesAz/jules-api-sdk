@@ -1,0 +1,17 @@
+{
+  "name": "sessions/err-321",
+  "id": "err-321",
+  "prompt": "Migrate database from v1 to v2.",
+  "sourceContext": {
+    "source": "sources/github/my-org/internal-tools",
+    "githubRepoContext": {
+      "startingBranch": "main"
+    }
+  },
+  "title": "Database Migration v1-v2",
+  "createTime": "2025-10-06T12:00:00.000000Z",
+  "updateTime": "2025-10-06T18:00:00.000000Z",
+  "state": "FAILED",
+  "url": "https://jules.google.com/app/session/err-321",
+  "outputs": []
+}

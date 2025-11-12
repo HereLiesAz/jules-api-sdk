@@ -1,0 +1,17 @@
+{
+  "name": "sessions/xyz-987",
+  "id": "xyz-987",
+  "prompt": "Fix the typo on the landing page.",
+  "sourceContext": {
+    "source": "sources/github/google/jules-demo-repo",
+    "githubRepoContext": {
+      "startingBranch": "main"
+    }
+  },
+  "title": "Fix landing page typo",
+  "createTime": "2025-10-09T09:00:00.000000Z",
+  "updateTime": "2025-10-09T09:15:00.000000Z",
+  "state": "COMPLETED",
+  "url": "https://jules.google.com/app/session/xyz-987",
+  "outputs": []
+}

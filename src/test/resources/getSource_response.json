@@ -1,23 +1,23 @@
 {
-  "name": "sources/github/google/jules-demo-repo",
-  "id": "github/google/jules-demo-repo",
-  "githubRepo": {
-    "owner": "google",
-    "repo": "jules-demo-repo",
-    "isPrivate": false,
-    "defaultBranch": {
-      "displayName": "main"
-    },
-    "branches": [
-      {
-        "displayName": "main"
-      },
-      {
-        "displayName": "develop"
-      },
-      {
-        "displayName": "feature/new-login"
-      }
-    ]
-  }
+"name": "sources/github/google/jules-demo-repo",
+"id": "github/google/jules-demo-repo",
+"githubRepo": {
+"owner": "google",
+"repo": "jules-demo-repo",
+"isPrivate": false,
+"defaultBranch": {
+"displayName": "main"
+},
+"branches": [
+{
+"displayName": "main"
+},
+{
+"displayName": "develop"
+},
+{
+"displayName": "feature/new-login"
+}
+]
+}
 }

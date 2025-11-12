@@ -149,11 +149,169 @@ class JulesClientTest {
 
     @Test
     fun `sendMessage returns message`() = runBlocking {
-        val mockResponse = readResource("/sendMessage.json")
+        val mockResponse = readResource("/sendMessage_response.json")
         client = createMockClient(mapOf("/sessions/test-id:sendMessage" to mockResponse))
         val response = client.sendMessage("test-id", "prompt")
         assertTrue(response is SdkResult.Success)
         val expected = json.decodeFromString<MessageResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSources returns empty list`() = runBlocking {
+        val mockResponse = readResource("/listSources_response_empty.json")
+        client = createMockClient(mapOf("/sources" to mockResponse))
+        val response = client.listSources()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSourcesResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSources returns populated list`() = runBlocking {
+        val mockResponse = readResource("/listSources_response_populated.json")
+        client = createMockClient(mapOf("/sources" to mockResponse))
+        val response = client.listSources()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSourcesResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSources returns paginated list`() = runBlocking {
+        val mockResponse = readResource("/listSources_response_paginated.json")
+        client = createMockClient(mapOf("/sources" to mockResponse))
+        val response = client.listSources()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSourcesResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `createSession returns session with minimal request`() = runBlocking {
+        val mockCreateResponse = readResource("/createSession_response.json")
+        val mockGetResponse = readResource("/getSession_response_queued.json")
+        client = createMockClient(mapOf(
+            "/sessions" to mockCreateResponse,
+            "/sessions/abc-123" to mockGetResponse
+        ))
+        val request = json.decodeFromString<CreateSessionRequest>(readResource("/createSession_request_minimal.json"))
+        val response = client.createSession(request)
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockGetResponse)
+        assertEquals(expected, (response as SdkResult.Success).data.session)
+    }
+
+    @Test
+    fun `createSession returns session with maximal request`() = runBlocking {
+        val mockCreateResponse = readResource("/createSession_response.json")
+        val mockGetResponse = readResource("/getSession_response_queued.json")
+        client = createMockClient(mapOf(
+            "/sessions" to mockCreateResponse,
+            "/sessions/abc-123" to mockGetResponse
+        ))
+        val request = json.decodeFromString<CreateSessionRequest>(readResource("/createSession_request_maximal.json"))
+        val response = client.createSession(request)
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockGetResponse)
+        assertEquals(expected, (response as SdkResult.Success).data.session)
+    }
+
+    @Test
+    fun `getSession returns queued session`() = runBlocking {
+        val mockResponse = readResource("/getSession_response_queued.json")
+        client = createMockClient(mapOf("/sessions/test-id" to mockResponse))
+        val response = client.getSession("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `getSession returns awaiting approval session`() = runBlocking {
+        val mockResponse = readResource("/getSession_response_awaiting_approval.json")
+        client = createMockClient(mapOf("/sessions/test-id" to mockResponse))
+        val response = client.getSession("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `getSession returns completed with output session`() = runBlocking {
+        val mockResponse = readResource("/getSession_response_completed_with_output.json")
+        client = createMockClient(mapOf("/sessions/test-id" to mockResponse))
+        val response = client.getSession("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `getSession returns failed session`() = runBlocking {
+        val mockResponse = readResource("/getSession_response_failed.json")
+        client = createMockClient(mapOf("/sessions/test-id" to mockResponse))
+        val response = client.getSession("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<Session>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSessions returns empty list`() = runBlocking {
+        val mockResponse = readResource("/listSessions_response_empty.json")
+        client = createMockClient(mapOf("/sessions" to mockResponse))
+        val response = client.listSessions()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSessionsResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSessions returns populated list`() = runBlocking {
+        val mockResponse = readResource("/listSessions_response_populated.json")
+        client = createMockClient(mapOf("/sessions" to mockResponse))
+        val response = client.listSessions()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSessionsResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listSessions returns paginated list`() = runBlocking {
+        val mockResponse = readResource("/listSessions_response_paginated.json")
+        client = createMockClient(mapOf("/sessions" to mockResponse))
+        val response = client.listSessions()
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListSessionsResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `approvePlan returns success`() = runBlocking {
+        val mockResponse = readResource("/approvePlan_response.json")
+        client = createMockClient(mapOf("/sessions/test-id:approvePlan" to mockResponse))
+        val response = client.approvePlan("test-id")
+        assertTrue(response is SdkResult.Success)
+    }
+
+    @Test
+    fun `listActivities returns empty list`() = runBlocking {
+        val mockResponse = readResource("/listActivities_response_empty.json")
+        client = createMockClient(mapOf("/sessions/test-id/activities" to mockResponse))
+        val response = client.listActivities("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListActivitiesResponse>(mockResponse)
+        assertEquals(expected, (response as SdkResult.Success).data)
+    }
+
+    @Test
+    fun `listActivities returns paginated list`() = runBlocking {
+        val mockResponse = readResource("/listActivities_response_paginated.json")
+        client = createMockClient(mapOf("/sessions/test-id/activities" to mockResponse))
+        val response = client.listActivities("test-id")
+        assertTrue(response is SdkResult.Success)
+        val expected = json.decodeFromString<ListActivitiesResponse>(mockResponse)
         assertEquals(expected, (response as SdkResult.Success).data)
     }
 }

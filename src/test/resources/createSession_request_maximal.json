@@ -1,0 +1,12 @@
+{
+  "prompt": "Refactor the entire authentication module to use OIDC, and add unit tests for all new code.",
+  "sourceContext": {
+    "source": "sources/github/my-org/internal-tools",
+    "githubRepoContext": {
+      "startingBranch": "staging"
+    }
+  },
+  "title": "OIDC Authentication Refactor",
+  "requirePlanApproval": true,
+  "automationMode": "AUTO_CREATE_PR"
+}

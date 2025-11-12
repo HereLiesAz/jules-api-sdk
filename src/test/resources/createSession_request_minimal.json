@@ -1,0 +1,9 @@
+{
+  "prompt": "Please add a new /health endpoint to the main server.",
+  "sourceContext": {
+    "source": "sources/github/google/jules-demo-repo",
+    "githubRepoContext": {
+      "startingBranch": "main"
+    }
+  }
+}

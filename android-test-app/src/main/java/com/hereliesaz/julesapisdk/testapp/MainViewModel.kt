@@ -25,10 +25,6 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState
 
-    // For Chat tab
-    private val _messages = MutableStateFlow<List<Message>>(emptyList())
-    val messages: StateFlow<List<Message>> = _messages
-
     // For Logcat tab
     private val _diagnosticLogs = MutableStateFlow<List<String>>(emptyList())
     val diagnosticLogs: StateFlow<List<String>> = _diagnosticLogs
@@ -98,7 +94,6 @@ class MainViewModel : ViewModel() {
         }
         addLog("Creating session with source: ${source.name}")
         viewModelScope.launch {
-            _messages.value = emptyList() // Clear chat on new session
             val sourceContext = if (source is GithubRepoSource) {
                 SourceContext(source.name, GithubRepoContext("main"))
             } else {
@@ -170,8 +165,13 @@ class MainViewModel : ViewModel() {
     }
 
     private fun addMessage(message: Message) {
-        val newMessages = _messages.value.toMutableList()
-        newMessages.add(message)
-        _messages.value = newMessages
+        val currentState = _uiState.value
+        if (currentState is UiState.Chat) {
+            val newMessages = currentState.messages.toMutableList()
+            newMessages.add(message)
+            _uiState.value = UiState.Chat(newMessages)
+        } else {
+            _uiState.value = UiState.Chat(listOf(message))
+        }
     }
 }

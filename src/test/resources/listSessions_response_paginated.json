@@ -1,0 +1,22 @@
+{
+  "sessions": [
+    {
+      "name": "sessions/abc-123",
+      "id": "abc-123",
+      "prompt": "Please add a new /health endpoint to the main server.",
+      "sourceContext": {
+        "source": "sources/github/google/jules-demo-repo",
+        "githubRepoContext": {
+          "startingBranch": "main"
+        }
+      },
+      "title": "Add /health endpoint",
+      "createTime": "2025-10-07T10:00:00.000000Z",
+      "updateTime": "2025-10-07T10:00:01.000000Z",
+      "state": "QUEUED",
+      "url": "https://jules.google.com/app/session/abc-123",
+      "outputs": []
+    }
+  ],
+  "nextPageToken": "pager-token-456"
+}

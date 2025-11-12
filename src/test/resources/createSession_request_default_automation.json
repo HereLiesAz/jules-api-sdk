@@ -1,0 +1,12 @@
+{
+  "prompt": "Fix the typo on the landing page.",
+  "sourceContext": {
+    "source": "sources/github/google/jules-demo-repo",
+    "githubRepoContext": {
+      "startingBranch": "main"
+    }
+  },
+  "title": "Fix landing page typo",
+  "requirePlanApproval": false,
+  "automationMode": "AUTOMATION_MODE_UNSPECIFIED"
+}
