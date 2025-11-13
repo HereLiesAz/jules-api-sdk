@@ -10,7 +10,6 @@ import com.hereliesaz.julesapisdk.GithubRepoContext
 // *** MODIFIED: Renamed import ***
 import com.hereliesaz.julesapisdk.JulesApiClient
 import com.hereliesaz.julesapisdk.JulesSession
-import com.hereliesaz.julesapisdk.PartialSession
 import com.hereliesaz.julesapisdk.SdkResult
 import com.hereliesaz.julesapisdk.Session
 import com.hereliesaz.julesapisdk.Source
@@ -105,45 +104,27 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // *** MODIFIED: This function now takes a PartialSession ***
-    fun resumeSession(sessionFromList: PartialSession) {
+    // *** MODIFIED: This function now takes a Session and is much simpler ***
+    fun resumeSession(session: Session) {
         if (julesClient == null) {
             addLog("Error: Client not initialized. Cannot resume session.")
             return
         }
-        addLog("Resuming session: ${sessionFromList.name}...")
+        addLog("Resuming session: ${session.name}...")
         viewModelScope.launch {
             _messages.value = emptyList() // Clear chat
-            _uiState.value = UiState.Loading // Show spinner
 
-            // *** This logic is now CORRECT and NECESSARY ***
-            when (val fullSessionResult = julesClient!!.getSession(sessionFromList.name)) {
-                is SdkResult.Success -> {
-                    // Note: fullSessionResult.data is JulesSession, its .session property is Session
-                    val fullSession = fullSessionResult.data.session
-                    julesSession = fullSessionResult.data // This is the JulesSession wrapper
-                    isSessionActive = (fullSession.state != "COMPLETED" && fullSession.state != "FAILED")
+            // Since listSessions() now returns full Session objects, we can just wrap it.
+            // No need for another network call.
+            julesSession = JulesSession(julesClient!!, session)
+            isSessionActive = (session.state != "COMPLETED" && session.state != "FAILED")
 
-                    val successMsg = "Resumed session: ${fullSession.name}\nState: ${fullSession.state ?: "UNKNOWN"}"
-                    addMessage(Message(successMsg, MessageType.BOT))
-                    addLog(successMsg)
+            val successMsg = "Resumed session: ${session.name}\nState: ${session.state ?: "UNKNOWN"}"
+            addMessage(Message(successMsg, MessageType.BOT))
+            addLog(successMsg)
 
-                    _uiState.value = UiState.Idle // Hide spinner
-                    loadActivities() // Now this will work
-                }
-                is SdkResult.Error -> {
-                    val errorMsg = "API Error getting session details: ${fullSessionResult.code} - ${fullSessionResult.body}"
-                    addLog(errorMsg)
-                    _uiState.value = UiState.Error(errorMsg)
-                }
-                is SdkResult.NetworkError -> {
-                    val sw = StringWriter()
-                    fullSessionResult.throwable.printStackTrace(PrintWriter(sw))
-                    val errorMsg = "Network error getting session details: $sw"
-                    addLog(errorMsg)
-                    _uiState.value = UiState.Error(errorMsg)
-                }
-            }
+            _uiState.value = UiState.Idle // Hide spinner
+            loadActivities() // Load the history
         }
     }
 
@@ -242,7 +223,7 @@ class MainViewModel : ViewModel() {
                             }
                             is Activity.PlanApprovedActivity -> newMessages.add(Message("[USER: Plan Approved]", MessageType.USER))
                             // Handle unknown activities gracefully
-                            is Activity.UnknownActivity -> addLog("Ignored unknown activity: ${activity.name}")
+                            else -> addLog("Ignored unknown activity.")
                         }
                     }
                     _messages.value = newMessages

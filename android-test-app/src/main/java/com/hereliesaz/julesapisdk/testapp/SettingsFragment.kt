@@ -50,7 +50,7 @@ class SettingsFragment : Fragment() {
 
     private fun setupRecyclerViews() {
         // Setup Sessions Adapter
-        // *** MODIFIED: The adapter now handles PartialSession, and passes it to resumeSession ***
+        // *** MODIFIED: The adapter now handles Session, and passes it to resumeSession ***
         sessionsAdapter = SessionsAdapter { session ->
             viewModel.resumeSession(session)
             (activity as? MainActivity)?.binding?.viewPager?.currentItem = 0 // Switch to chat
